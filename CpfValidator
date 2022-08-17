@@ -1,0 +1,97 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace CPFValidate
+
+{
+    public class CPF 
+    {
+        public string Numero { get; set; }
+
+        //validar CPF
+        public static bool Validar (string CPF)
+        {
+            bool cpfValido = true;
+
+            // verificar se o CPF tem 11 dígitos
+            if (CPF.Length != 11)
+                cpfValido = false;
+            else
+            {
+                // verificar se todos os caracteres são dígitos numéricos
+                for (int i = 0; i < CPF.Length; i++)
+                {
+                    if (!char.IsDigit(CPF[i]))
+                    {
+                        cpfValido = false;
+                        break;
+                    }
+                }
+            }
+
+            // verificar se é 000000000000,...., 999999999999
+            if (cpfValido)
+            {
+                for ( byte i = 0; i < CPF.Length; i++)
+                {
+                    var temp = new string(Convert.ToChar(i), 11);
+                    if (CPF == temp)
+                    {
+                        cpfValido = false;
+                        break;
+
+                    }
+                }
+            }
+            // verificar digito de controle do cpf
+            if (cpfValido)
+            {
+                var j = 0;
+                var d1 = 0;
+                var d2 = 0;
+
+                //validar o primeiro dígito de controle
+                for (int i=10; i>1; i--)
+                {
+                    d1 += Convert.ToInt32(CPF.Substring(j, 1)) * i;
+                    j++;
+                }
+                // resto da divisão
+                d1 = (d1 * 10) % 11;
+                if (d1 == 10)
+                    d1 = 0;
+                //verificar se o primeiro número bateu com a posição 9 (penúltima)
+                if (d1 != Convert.ToInt32(CPF.Substring(, 1)))
+                    cpfValido = false;
+
+                //validar o segundo dígito do controle
+                if (cpfValido)
+                {
+                    j = 0;
+                    for (int i= 11; i>1; i--)
+                    {
+                        d2 += Convert.ToInt32(CPF.Substring(j, 1)) * i;
+                        j++;
+                    }
+
+                    //resto da divisão
+                    d2 = (d2 * 10) % 11;
+                    if (d2 == 10)
+                        d2 = 0;
+
+                    // verificar se o segundo digito bateu, posição 10 (última)
+                    if (d2 !=Convert.ToInt32(CPF.Substring(10,1)))
+                        cpfValido=false;
+                }
+
+            }
+            return cpfValido;
+
+        }
+
+        
+    }
+}
